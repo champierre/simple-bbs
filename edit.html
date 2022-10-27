@@ -11,9 +11,10 @@
         if (id) {
           fetch(ENDPOINT_URL)
             .then((response) => response.json())
-            .then((data) => {
-              document.getElementById('title').value = data[id - 1].title;
-              document.getElementById('body').value = data[id - 1].body;
+            .then((array) => {
+              const data = array.find(item => Number(item.id) === Number(id));
+              document.getElementById('title').value = data.title;
+              document.getElementById('body').value = data.body;
               document.getElementById('id').value = id;
               document.getElementById('page-title').innerText = 'Edit Blog';
             });
@@ -21,12 +22,13 @@
       });
 
       function save() {
-        const title = document.getElementById('title').value;
-        const body = document.getElementById('body').value;
         const data = {
-          title: title,
-          body: body
+          title: document.getElementById('title').value,
+          body: document.getElementById('body').value
         };
+        if (document.getElementById('id').value) {
+          data.id = document.getElementById('id').value;
+        }
         fetch(ENDPOINT_URL, {
           method: 'POST',
           body: JSON.stringify(data)

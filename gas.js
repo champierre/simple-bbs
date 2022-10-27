@@ -1,12 +1,13 @@
 function setup() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const rows = sheet.getDataRange().getValues();
-  const header = rows[0];
-  return [sheet, rows, header];
+  let header = rows[0];
+  const maxId = Number(header.pop());
+  return [sheet, rows, header, maxId];
 }
 
 function doGet() {
-  const [sheet, rows, header] = setup();
+  const [sheet, rows, header, maxId] = setup();
 
   let data = []
   for (let i = 1; i < rows.length; i++) {
@@ -25,7 +26,7 @@ function doGet() {
 }
 
 function doPost(e) {
-  const [sheet, rows, header] = setup();
+  const [sheet, rows, header, maxId] = setup();
   
   const data = JSON.parse(e.postData.getDataAsString());
   let rowArray = []
@@ -35,10 +36,11 @@ function doPost(e) {
 
   let message;
   if (Object.keys(data).includes("id")) {
+    const index = rows.findIndex(row => Number(row[0]) === Number(data.id))
     if (Object.keys(data).length === 1) {
       // Delete
       try {
-        sheet.deleteRow(Number(data["id"]) + 1);
+        sheet.deleteRow(index + 1);
         message = { status: "success" };
       } catch(error) {
         message = { status: "error", message: error };
@@ -47,7 +49,7 @@ function doPost(e) {
       // Update
       try {
         for (let i = 0; i < rowArray.length; i++) {
-          sheet.getRange(Number(data["id"]) + 1, i + 1).setValue(rowArray[i]);
+          sheet.getRange(index + 1, i + 1).setValue(rowArray[i]);
         }
         message = { status: "success" };
       } catch(error) {
@@ -57,6 +59,9 @@ function doPost(e) {
   } else {
     // Create
     try {
+      const newId = maxId + 1;
+      rowArray[0] = newId;
+      sheet.getRange(1, header.length + 1).setValue(newId);
       sheet.appendRow(rowArray);
       message = { status: "success" };
     } catch(error) {

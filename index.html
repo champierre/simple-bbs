@@ -34,8 +34,8 @@
                 <td>${data[i].title}</td>
                 <td>${data[i].body}</td>
                 <td>
-                  <a href="edit.html?id=${i + 1}">Edit</a>
-                  <a href="#" onclick="deleteItem(${i + 1})">Delete</a>
+                  <a href="edit.html?id=${data[i].id}">Edit</a>
+                  <a href="#" onclick="deleteItem(${data[i].id})">Delete</a>
                 </td>
               `;
               blog.appendChild(tr);
