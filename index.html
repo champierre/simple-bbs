@@ -5,6 +5,10 @@
       let items = [];
       let ENDPOINT_URL;
 
+      function h(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
       function editItem(id) {
         const data = items.find(item => Number(item.id) === Number(id));
         document.getElementById('title').value = data.title;
@@ -67,8 +71,8 @@
                 for (let i = 0; i < items.length; i++) {
                   const tr = document.createElement('tr');
                   tr.innerHTML = `
-                    <td>${items[i].title}</td>
-                    <td>${items[i].body}</td>
+                    <td>${h(items[i].title)}</td>
+                    <td>${h(items[i].body)}</td>
                     <td>
                       <a href="#" onclick="editItem(${items[i].id});">&#x270d;</a>
                       <a href="#" onclick="deleteItem(${items[i].id});">&#x274c;</a>
