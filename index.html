@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <title>Simple Blog</title>
+    <script>
+      const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbz06nzlIu0zMIokyNzkXge0SlJg3G2OMcE8uuGUxkbcVV8dPPw5pLoqE7AcYt6fHo2R/exec';
+      function deleteItem(id) {
+        if (window.confirm('Are you sure?')) {
+          const data = {
+            id: id
+          };
+          fetch(ENDPOINT_URL, {
+            method: 'POST',
+            body: JSON.stringify(data)
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.status === 'success') {
+                location.href = 'index.html';
+              } else {
+                console.error(data.message);
+              }
+            });
+        }
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        fetch(ENDPOINT_URL)
+          .then((response) => response.json())
+          .then((data) => {
+            const blog = document.getElementById('blog');
+            for (let i = 0; i < data.length; i++) {
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+                <td>${data[i].title}</td>
+                <td>${data[i].body}</td>
+                <td>
+                  <a href="edit.html?id=${i + 1}">Edit</a>
+                  <a href="#" onclick="deleteItem(${i + 1})">Delete</a>
+                </td>
+              `;
+              blog.appendChild(tr);
+            };
+          });      
+      });
+    </script>
+    <style>
+      table {
+        border-collapse: collapse;
+      }
+      th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Simple Blog</h1>
+    <table id="blog" >
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Body</th>
+          <th></th>
+        </tr>  
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <a href="edit.html">New blog</a>
+  </body>
+</html>

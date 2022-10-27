@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <title>Simple Blog</title>
+    <script>
+      const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbz06nzlIu0zMIokyNzkXge0SlJg3G2OMcE8uuGUxkbcVV8dPPw5pLoqE7AcYt6fHo2R/exec';
+      window.addEventListener("DOMContentLoaded", () => {
+
+        const params = new URLSearchParams(location.search);
+        const id = params.get('id');
+
+        if (id) {
+          fetch(ENDPOINT_URL)
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById('title').value = data[id - 1].title;
+              document.getElementById('body').value = data[id - 1].body;
+              document.getElementById('id').value = id;
+              document.getElementById('page-title').innerText = 'Edit Blog';
+            });
+        }     
+      });
+
+      function save() {
+        const title = document.getElementById('title').value;
+        const body = document.getElementById('body').value;
+        const data = {
+          title: title,
+          body: body
+        };
+        fetch(ENDPOINT_URL, {
+          method: 'POST',
+          body: JSON.stringify(data)
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === 'success') {
+              location.href = 'index.html';
+            } else {
+              console.error(data.message);
+            }
+          });
+      }
+    </script>
+    <style>
+    </style>
+  </head>
+  <body>
+    <h1 id="page-title">New blog</h1>
+    <p>
+      <label>Title</label><br />
+      <input type="text" id="title" />  
+    </p>
+    <p>
+      <label>Body</label><br />
+      <textarea id="body"></textarea>  
+    </p>
+    <input type="hidden" id="id" />
+    <input type="button" value="Save" onclick="save();" />
+  </body>
+</html>
