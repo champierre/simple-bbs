@@ -2,8 +2,8 @@
   <head>
     <title>Simple BBS</title>
     <script>
-      const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbz06nzlIu0zMIokyNzkXge0SlJg3G2OMcE8uuGUxkbcVV8dPPw5pLoqE7AcYt6fHo2R/exec';
       let items = [];
+      let ENDPOINT_URL;
 
       function editItem(id) {
         const data = items.find(item => Number(item.id) === Number(id));
@@ -55,24 +55,29 @@
       }
 
       window.addEventListener("DOMContentLoaded", () => {
-        fetch(ENDPOINT_URL)
-          .then((response) => response.json())
+        fetch("/url.txt")
+          .then((response) => response.text())
           .then((data) => {
-            items = data;
-            const table = document.getElementById('table');
-            for (let i = 0; i < items.length; i++) {
-              const tr = document.createElement('tr');
-              tr.innerHTML = `
-                <td>${items[i].title}</td>
-                <td>${items[i].body}</td>
-                <td>
-                  <a href="#" onclick="editItem(${items[i].id});">&#x270d;</a>
-                  <a href="#" onclick="deleteItem(${items[i].id});">&#x274c;</a>
-                </td>
-              `;
-              table.appendChild(tr);
-            };
-          });      
+            ENDPOINT_URL = data;
+            fetch(ENDPOINT_URL)
+              .then((response) => response.json())
+              .then((data) => {
+                items = data;
+                const table = document.getElementById('table');
+                for (let i = 0; i < items.length; i++) {
+                  const tr = document.createElement('tr');
+                  tr.innerHTML = `
+                    <td>${items[i].title}</td>
+                    <td>${items[i].body}</td>
+                    <td>
+                      <a href="#" onclick="editItem(${items[i].id});">&#x270d;</a>
+                      <a href="#" onclick="deleteItem(${items[i].id});">&#x274c;</a>
+                    </td>
+                  `;
+                  table.appendChild(tr);
+                };
+              });
+          });
       });
     </script>
     <style>
