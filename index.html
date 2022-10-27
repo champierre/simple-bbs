@@ -1,8 +1,17 @@
 <html>
   <head>
-    <title>Simple Blog</title>
+    <title>Simple BBS</title>
     <script>
       const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbz06nzlIu0zMIokyNzkXge0SlJg3G2OMcE8uuGUxkbcVV8dPPw5pLoqE7AcYt6fHo2R/exec';
+      let items = [];
+
+      function editItem(id) {
+        const data = items.find(item => Number(item.id) === Number(id));
+        document.getElementById('title').value = data.title;
+        document.getElementById('body').value = data.body;
+        document.getElementById('id').value = id;
+      }
+      
       function deleteItem(id) {
         if (window.confirm('Are you sure?')) {
           const data = {
@@ -23,22 +32,45 @@
         }
       }
 
+      function save() {
+        const data = {
+          title: document.getElementById('title').value,
+          body: document.getElementById('body').value
+        };
+        if (document.getElementById('id').value) {
+          data.id = document.getElementById('id').value;
+        }
+        fetch(ENDPOINT_URL, {
+          method: 'POST',
+          body: JSON.stringify(data)
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === 'success') {
+              location.href = 'index.html';
+            } else {
+              console.error(data.message);
+            }
+          });
+      }
+
       window.addEventListener("DOMContentLoaded", () => {
         fetch(ENDPOINT_URL)
           .then((response) => response.json())
           .then((data) => {
-            const blog = document.getElementById('blog');
-            for (let i = 0; i < data.length; i++) {
+            items = data;
+            const table = document.getElementById('table');
+            for (let i = 0; i < items.length; i++) {
               const tr = document.createElement('tr');
               tr.innerHTML = `
-                <td>${data[i].title}</td>
-                <td>${data[i].body}</td>
+                <td>${items[i].title}</td>
+                <td>${items[i].body}</td>
                 <td>
-                  <a href="edit.html?id=${data[i].id}">Edit</a>
-                  <a href="#" onclick="deleteItem(${data[i].id})">Delete</a>
+                  <a href="#" onclick="editItem(${items[i].id});">&#x270d;</a>
+                  <a href="#" onclick="deleteItem(${items[i].id});">&#x274c;</a>
                 </td>
               `;
-              blog.appendChild(tr);
+              table.appendChild(tr);
             };
           });      
       });
@@ -51,11 +83,15 @@
         border: 1px solid #ccc;
         padding: 10px;
       }
+      a {
+        text-decoration: none;
+        color: #000;
+      }
     </style>
   </head>
   <body>
-    <h1>Simple Blog</h1>
-    <table id="blog" >
+    <h1>Simple BBS</h1>
+    <table id="table" >
       <thead>
         <tr>
           <th>Title</th>
@@ -66,6 +102,18 @@
       <tbody>
       </tbody>
     </table>
-    <a href="edit.html">New blog</a>
+
+    <div>
+      <p>
+        <label>Title</label><br />
+        <input type="text" id="title" />  
+      </p>
+      <p>
+        <label>Body</label><br />
+        <textarea id="body"></textarea>  
+      </p>
+      <input type="hidden" id="id" />
+      <input type="button" value="&#x1f4be;" onclick="save();" />
+    </div>
   </body>
 </html>
