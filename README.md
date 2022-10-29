@@ -6,7 +6,7 @@ simple-bbs は Google スプレッドシートをデータベースとして使�
 
 ## 設置方法
 
-1. [テンプレートの Google スプレッドシート](https://docs.google.com/spreadsheets/d/1ir3yB9LPUoFHY-aHDM5e7pYz_O39lZXLIGwY3R9bzrc/edit?usp=sharing) をコピーします。
+1. [テンプレートの Google スプレッドシート](https://docs.google.com/spreadsheets/d/1HXOEeYVHf1kZCWDVb4oqHFf7kNcAFikGSeqQaHQhFXI/edit?usp=sharing) をコピーします。
 
 2. Google スプレッドシートのメニューより、[拡張機能] > [Apps Script] を選び、API の役割をする Google Apps Script を開きます。
 
