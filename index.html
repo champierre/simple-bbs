@@ -45,7 +45,8 @@
 
         const data = {
           title: document.getElementById('title').value,
-          body: document.getElementById('body').value
+          body: document.getElementById('body').value,
+          date: new Date().toLocaleString()
         };
         if (document.getElementById('id').value) {
           data.id = document.getElementById('id').value;
@@ -79,6 +80,7 @@
                   tr.innerHTML = `
                     <td>${h(items[i].title)}</td>
                     <td>${h(items[i].body)}</td>
+                    <td>${h(items[i].date)}</td>
                     <td>
                       <a href="#" onclick="editItem(${items[i].id});">&#x270d;</a>
                       <a href="#" onclick="deleteItem(${items[i].id});">&#x274c;</a>
@@ -128,6 +130,7 @@
           <tr>
             <th>Title</th>
             <th>Body</th>
+            <th>Date</th>
             <th></th>
           </tr>  
         </thead>
